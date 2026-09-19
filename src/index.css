@@ -25,24 +25,6 @@ a { color: #075a94; }
 
 section { margin-block: 1.5rem; }
 
-.books-grid {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-  gap: 1.5rem;
-}
-
-.book-card {
-  height: 100%;
-  padding: 1.5rem;
-  border: 1px solid #c7d2dc;
-  border-radius: 0.5rem;
-  background: white;
-  display: flex;
-  flex-direction: column;
-}
-
 .book-card h3 { margin-top: 0; }
 .book-card p { margin: 0.25rem 0; }
 .book-card .price { font-size: 1.1rem; color: #b12704; }

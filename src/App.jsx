@@ -1,6 +1,8 @@
 import AppLayout from './components/layout/AppLayout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import OrderPage from './pages/OrderPage.jsx';
+import BookSelectionProvider from './providers/BookSelectionProvider.jsx';
+import useBookSelection from './hooks/useBookSelection.js';
 import { books } from './data/books.js';
 
 const links = [
@@ -8,14 +10,24 @@ const links = [
   { href: '#order', label: 'Оформлення замовлення' },
 ];
 
-export default function App() {
-  // Для демонстрації ЛР 1.2 жорстко передаємо першу книгу
-  const demoBook = books[0]; 
+// Проміжний компонент для читання контексту
+function AppContent() {
+  const { selectedId, selectedBook, selectBook, clearSelection } = useBookSelection();
+  return (
+    <>
+      <HomePage books={books} selectedId={selectedId} onSelect={selectBook} />
+      {/* key гарантує очищення чернетки при зміні обраної книги */}
+      <OrderPage key={selectedId ?? 'empty'} book={selectedBook} onClearSelection={clearSelection} />
+    </>
+  );
+}
 
+export default function App() {
   return (
     <AppLayout title="BookStore" links={links}>
-      <HomePage />
-      <OrderPage book={demoBook} />
+      <BookSelectionProvider books={books}>
+        <AppContent />
+      </BookSelectionProvider>
     </AppLayout>
   );
 }

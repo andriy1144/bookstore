@@ -1,33 +1,57 @@
+import { Routes, Route } from 'react-router';
 import AppLayout from './components/layout/AppLayout.jsx';
-import HomePage from './pages/HomePage.jsx';
-import OrderPage from './pages/OrderPage.jsx';
-import BookSelectionProvider from './providers/BookSelectionProvider.jsx';
-import useBookSelection from './hooks/useBookSelection.js';
-import { books } from './data/books.js';
+import OrdersLayout from './components/layout/OrdersLayout.jsx';
 
-const links = [
-  { href: '#catalog', label: 'Каталог' },
-  { href: '#order', label: 'Оформлення замовлення' },
+import HomePage from './pages/HomePage.jsx';
+import BookListPage from './pages/BookListPage.jsx';
+import BookDetailsPage from './pages/BookDetailsPage.jsx';
+import OrdersPage from './pages/OrdersPage.jsx';
+import OrderCreatePage from './pages/OrderCreatePage.jsx';
+import OrderEditPage from './pages/OrderEditPage.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
+
+import { books } from './data/books.js';
+import { orders } from './data/orders.js';
+
+import useBookSelection from './hooks/useBookSelection.js';
+
+const navLinks = [
+  { to: '/', label: 'Головна', end: true },
+  { to: '/books', label: 'Каталог' },
+  { to: '/orders', label: 'Замовлення' },
 ];
 
-// Проміжний компонент для читання контексту
-function AppContent() {
-  const { selectedId, selectedBook, selectBook, clearSelection } = useBookSelection();
-  return (
-    <>
-      <HomePage books={books} selectedId={selectedId} onSelect={selectBook} />
-      {/* key гарантує очищення чернетки при зміні обраної книги */}
-      <OrderPage key={selectedId ?? 'empty'} book={selectedBook} onClearSelection={clearSelection} />
-    </>
-  );
+// Проксі-компонент для передачі Context в BookListPage
+function CatalogContainer() {
+  const { selectedId, selectBook } = useBookSelection();
+  return <BookListPage books={books} selectedId={selectedId} onSelect={selectBook} />;
 }
 
 export default function App() {
   return (
-    <AppLayout title="BookStore" links={links}>
-      <BookSelectionProvider books={books}>
-        <AppContent />
-      </BookSelectionProvider>
-    </AppLayout>
+    <Routes>
+      <Route element={<AppLayout title="BookStore" links={navLinks} books={books} />}>
+        
+        {/* Головна сторінка */}
+        <Route index element={<HomePage />} />
+        
+        {/* Розділ каталогу книг */}
+        <Route path="books">
+          <Route index element={<CatalogContainer />} />
+          <Route path=":bookId" element={<BookDetailsPage books={books} />} />
+        </Route>
+
+        {/* Розділ замовлень із вкладеним компонуванням (OrdersLayout) */}
+        <Route path="orders" element={<OrdersLayout />}>
+          <Route index element={<OrdersPage orders={orders} books={books} />} />
+          <Route path="new" element={<OrderCreatePage books={books} />} />
+          <Route path=":orderId/edit" element={<OrderEditPage orders={orders} books={books} />} />
+        </Route>
+
+        {/* Обробка невідомих маршрутів (Сторінка 404) */}
+        <Route path="*" element={<NotFoundPage />} />
+        
+      </Route>
+    </Routes>
   );
 }

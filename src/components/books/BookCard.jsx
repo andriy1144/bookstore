@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import Card from 'react-bootstrap/Card';
 import AvailabilityBadge from './AvailabilityBadge.jsx';
 import AppButton from '../ui/AppButton.jsx';
@@ -9,7 +10,14 @@ export default function BookCard({ book, selected, onSelect }) {
   return (
     <Card className={`h-100 shadow-sm ${selected ? 'border-primary border-2' : 'border-0'}`}>
       <Card.Body className="d-flex flex-column">
-        <Card.Title>{book.title}</Card.Title>
+        
+        {/* Оновлений заголовок із посиланням */}
+        <Card.Title>
+          <Link to={`/books/${encodeURIComponent(book.id)}`} className="text-decoration-none text-dark">
+            {book.title}
+          </Link>
+        </Card.Title>
+        
         <Card.Subtitle className="mb-3 text-muted">{book.author}</Card.Subtitle>
         
         <Card.Text>

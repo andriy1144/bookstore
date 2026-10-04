@@ -8,11 +8,10 @@ import BookDetailsPage from './pages/BookDetailsPage.jsx';
 import OrdersPage from './pages/OrdersPage.jsx';
 import OrderCreatePage from './pages/OrderCreatePage.jsx';
 import OrderEditPage from './pages/OrderEditPage.jsx';
+import OrderViewPage from './pages/OrderViewPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
 import { books } from './data/books.js';
-import { orders } from './data/orders.js';
-
 import useBookSelection from './hooks/useBookSelection.js';
 
 const navLinks = [
@@ -32,23 +31,20 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout title="BookStore" links={navLinks} books={books} />}>
         
-        {/* Головна сторінка */}
         <Route index element={<HomePage />} />
         
-        {/* Розділ каталогу книг */}
         <Route path="books">
           <Route index element={<CatalogContainer />} />
           <Route path=":bookId" element={<BookDetailsPage books={books} />} />
         </Route>
 
-        {/* Розділ замовлень із вкладеним компонуванням (OrdersLayout) */}
         <Route path="orders" element={<OrdersLayout />}>
-          <Route index element={<OrdersPage orders={orders} books={books} />} />
+          <Route index element={<OrdersPage books={books} />} />
           <Route path="new" element={<OrderCreatePage books={books} />} />
-          <Route path=":orderId/edit" element={<OrderEditPage orders={orders} books={books} />} />
+          <Route path=":orderId" element={<OrderViewPage books={books} />} />
+          <Route path=":orderId/edit" element={<OrderEditPage books={books} />} />
         </Route>
 
-        {/* Обробка невідомих маршрутів (Сторінка 404) */}
         <Route path="*" element={<NotFoundPage />} />
         
       </Route>

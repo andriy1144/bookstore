@@ -21,6 +21,7 @@ export default function OrderCreatePage({ books }) {
   const bookId = searchParams.get('bookId');
   const [draft, setDraft] = useState({ ...emptyDraft, bookId: bookId || '' });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!bookId) {
     const lastSearch = selectedId ? `?bookId=${selectedId}` : '';
@@ -39,18 +40,24 @@ export default function OrderCreatePage({ books }) {
 
   function handleDraftChange(name, value) {
     setDraft(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: undefined })); // Очищення помилки при зміні
+    setErrors(prev => ({ ...prev, [name]: undefined }));
   }
 
-  function handleSubmit(e) {
+  // Асинхронна відправка
+  async function handleSubmit(e) {
     e.preventDefault();
-    const result = createOrder(draft);
+    setIsSubmitting(true);
+    setErrors({});
+    
+    const result = await createOrder(draft);
+    
+    setIsSubmitting(false);
     if (!result.ok) {
-      setErrors(result.errors); // Валідація не пройшла
+      setErrors(result.errors);
       return;
     }
     clearSelection();
-    navigate(`/orders/${result.record.id}`); // Перехід до перегляду
+    navigate(`/orders/${result.record.id}`);
   }
 
   return (
@@ -58,7 +65,7 @@ export default function OrderCreatePage({ books }) {
       <Row className="g-4 mb-4">
         <Col md={7}>
           <OrderForm 
-            bookTitle={book.title} draft={draft} errors={errors}
+            bookTitle={book.title} draft={draft} errors={errors} isSubmitting={isSubmitting}
             onDraftChange={handleDraftChange} 
             onReset={() => { setDraft({ ...emptyDraft, bookId }); setErrors({}); }} 
             onSubmit={handleSubmit}

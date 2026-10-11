@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Spinner from 'react-bootstrap/Spinner';
 import PageHeading from '../components/ui/PageHeading.jsx';
 import Section from '../components/ui/Section.jsx';
 import OrderForm from '../components/order/OrderForm.jsx';
@@ -12,13 +13,11 @@ import NotFoundPage from './NotFoundPage.jsx';
 export default function OrderEditPage({ books }) {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { orders, updateOrder } = useOrders();
+  const { orders, isLoading, updateOrder } = useOrders();
   
-  // 1. Отримуємо дані ДО того, як робити early return
   const order = orders.find((o) => o.id === orderId);
   const book = order ? books.find((b) => b.id === order.bookId) : null;
   
-  // 2. Викликаємо хуки БЕЗУМОВНО (Rules of Hooks)
   const [draft, setDraft] = useState({
     bookId: order?.bookId ?? '',
     customerName: order?.customerName ?? '',
@@ -28,8 +27,18 @@ export default function OrderEditPage({ books }) {
   });
   
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 3. Тепер робимо перевірки (Early returns)
+  // Стан завантаження з API
+  if (isLoading) {
+    return (
+      <div className="text-center py-5">
+        <Spinner animation="border" variant="primary" />
+        <p className="mt-3 text-muted">Завантаження даних для редагування...</p>
+      </div>
+    );
+  }
+
   if (!order) return <NotFoundPage title="Замовлення не знайдено" />;
   if (!book) return <NotFoundPage title="Книгу не знайдено" />;
 
@@ -38,9 +47,14 @@ export default function OrderEditPage({ books }) {
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const result = updateOrder(order.id, draft);
+    setIsSubmitting(true);
+    setErrors({});
+    
+    const result = await updateOrder(order.id, draft);
+    
+    setIsSubmitting(false);
     if (!result.ok) {
       setErrors(result.errors);
       return;
@@ -50,14 +64,12 @@ export default function OrderEditPage({ books }) {
 
   return (
     <>
-      <PageHeading title={`Редагування замовлення: ${order.id}`} />
+      <PageHeading title={`Редагування: ${order.id}`} />
       <Section id="order-edit" title="Поля та підсумок">
         <Row className="g-4 mb-4">
           <Col md={7}>
             <OrderForm 
-              bookTitle={book.title} 
-              draft={draft} 
-              errors={errors}
+              bookTitle={book.title} draft={draft} errors={errors} isSubmitting={isSubmitting}
               onDraftChange={handleDraftChange} 
               onReset={() => navigate(`/orders/${order.id}`)} 
               onSubmit={handleSubmit}

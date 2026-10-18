@@ -1,15 +1,39 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { BookSelectionContext } from '../context/BookSelectionContext.js';
 
 export default function BookSelectionProvider({ books, children }) {
   const [selectedId, setSelectedId] = useState(null);
-  const selectedBook = books.find(b => b.id === selectedId);
 
-  function selectBook(id) { setSelectedId(id); }
-  function clearSelection() { setSelectedId(null); }
+  const selectedBook = useMemo(
+    () => books.find((b) => b.id === selectedId) ?? null,
+    [books, selectedId]
+  );
+
+  const selectBook = useCallback(
+    (id) => {
+      if (books.some((b) => b.id === id)) {
+        setSelectedId(id);
+      }
+    },
+    [books]
+  );
+
+  const clearSelection = useCallback(() => {
+    setSelectedId(null);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      selectedId,
+      selectedBook,
+      selectBook,
+      clearSelection,
+    }),
+    [selectedId, selectedBook, selectBook, clearSelection]
+  );
 
   return (
-    <BookSelectionContext.Provider value={{ selectedId, selectedBook, selectBook, clearSelection }}>
+    <BookSelectionContext.Provider value={value}>
       {children}
     </BookSelectionContext.Provider>
   );

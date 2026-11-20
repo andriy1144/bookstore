@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ord-001",
+    "bookId": "bk-001",
+    "customerName": "Іван Франко",
+    "quantity": 1,
+    "needsDelivery": false,
+    "deliveryAddress": "Самовивіз",
+    "userId": null
+  },
+  {
+    "id": "ord-002",
+    "bookId": "bk-003",
+    "customerName": "Леся Українка",
+    "quantity": 2,
+    "needsDelivery": true,
+    "deliveryAddress": "м. Київ, вул. Хрещатик, 22",
+    "userId": null
+  },
+  {
+    "id": "ord-003",
+    "bookId": "bk-007",
+    "customerName": "Демо Користувач",
+    "quantity": 1,
+    "needsDelivery": true,
+    "deliveryAddress": "м. Івано-Франківськ, вул. Карпатська, 15",
+    "userId": "usr-001"
+  }
+]

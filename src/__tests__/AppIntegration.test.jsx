@@ -95,8 +95,9 @@ describe('Інтеграційні та компонентні тести BookSt
       </MemoryRouter>
     );
 
-    // 1. Стан завантаження (loading)
-    expect(screen.getByText(/Завантаження замовлень.../i)).toBeInTheDocument();
+    // 1. Стан завантаження (loading). Сторінка підвантажується ліниво (React.lazy),
+    // тому очікуємо її появу асинхронно, поки запит до API ще не завершено.
+    expect(await screen.findByText(/Завантаження замовлень.../i)).toBeInTheDocument();
 
     // 2. Стан помилки (error)
     deferredLoad.reject(new Error('Помилка з’єднання з API'));

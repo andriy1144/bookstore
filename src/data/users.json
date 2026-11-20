@@ -1,0 +1,9 @@
+[
+  {
+    "id": "usr-001",
+    "name": "Демо Користувач",
+    "email": "demo@bookstore.test",
+    "passwordHash": "87c52a505430c869fad302126aeef1bcd0e23487a83a296dc7d460bc15a369bb",
+    "createdAt": "2026-09-01T10:00:00.000Z"
+  }
+]

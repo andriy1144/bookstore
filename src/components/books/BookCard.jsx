@@ -2,6 +2,7 @@ import { useState, memo } from 'react';
 import { Link } from 'react-router';
 import Card from 'react-bootstrap/Card';
 import AvailabilityBadge from './AvailabilityBadge.jsx';
+import BookCover from './BookCover.jsx';
 import AppButton from '../ui/AppButton.jsx';
 
 function BookCard({ book, selected, onSelect }) {
@@ -9,6 +10,9 @@ function BookCard({ book, selected, onSelect }) {
 
   return (
     <Card className={`h-100 shadow-sm ${selected ? 'border-primary border-2' : 'border-0'}`}>
+      <Link to={`/books/${encodeURIComponent(book.id)}`} className="text-decoration-none">
+        <BookCover book={book} size="sm" />
+      </Link>
       <Card.Body className="d-flex flex-column">
         <Card.Title>
           <Link to={`/books/${encodeURIComponent(book.id)}`} className="text-decoration-none text-dark">
@@ -33,11 +37,7 @@ function BookCard({ book, selected, onSelect }) {
               {detailsOpen ? 'Згорнути' : 'Опис'}
             </AppButton>
 
-            <AppButton
-              variant="primary"
-              disabled={!book.available}
-              onClick={() => onSelect(book.id)}
-            >
+            <AppButton variant="primary" disabled={!book.available} onClick={() => onSelect(book.id)}>
               {selected ? 'Обрано' : 'Обрати'}
             </AppButton>
           </div>

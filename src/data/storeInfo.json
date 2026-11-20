@@ -1,0 +1,16 @@
+{
+  "name": "BookStore",
+  "address": "м. Івано-Франківськ, вул. Карпатська, 15",
+  "phone": "+380 (342) 00-00-00",
+  "email": "info@bookstore.test",
+  "workingHours": [
+    { "days": "Пн–Пт", "hours": "09:00–19:00" },
+    { "days": "Сб", "hours": "10:00–17:00" },
+    { "days": "Нд", "hours": "вихідний" }
+  ],
+  "feedbackTopics": [
+    { "value": "order", "label": "Питання щодо замовлення" },
+    { "value": "catalog", "label": "Пропозиція до асортименту" },
+    { "value": "other", "label": "Інше" }
+  ]
+}

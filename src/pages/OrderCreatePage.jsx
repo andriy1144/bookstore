@@ -8,6 +8,7 @@ import OrderForm from '../components/order/OrderForm.jsx';
 import OrderSummary from '../components/order/OrderSummary.jsx';
 import useBookSelection from '../hooks/useBookSelection.js';
 import useOrders from '../hooks/useOrders.js';
+import useAuth from '../hooks/useAuth.js';
 import NotFoundPage from './NotFoundPage.jsx';
 
 const emptyDraft = { customerName: '', quantity: '1', needsDelivery: false, deliveryAddress: '' };
@@ -17,9 +18,11 @@ export default function OrderCreatePage({ books }) {
   const navigate = useNavigate();
   const { selectedId, clearSelection } = useBookSelection();
   const { createOrder } = useOrders();
+  const { user } = useAuth();
+  const initialDraft = { ...emptyDraft, customerName: user?.name ?? '' };
   
   const bookId = searchParams.get('bookId');
-  const [draft, setDraft] = useState({ ...emptyDraft, bookId: bookId || '' });
+  const [draft, setDraft] = useState({ ...initialDraft, bookId: bookId || '' });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -67,7 +70,7 @@ export default function OrderCreatePage({ books }) {
           <OrderForm 
             bookTitle={book.title} draft={draft} errors={errors} isSubmitting={isSubmitting}
             onDraftChange={handleDraftChange} 
-            onReset={() => { setDraft({ ...emptyDraft, bookId }); setErrors({}); }} 
+            onReset={() => { setDraft({ ...initialDraft, bookId }); setErrors({}); }} 
             onSubmit={handleSubmit}
           />
         </Col>

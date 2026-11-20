@@ -12,7 +12,7 @@ export default function OrderSummary({ bookTitle, draft, price }) {
           <dt>Книга:</dt> <dd>{bookTitle}</dd>
           <dt>Кількість:</dt> <dd>{draft.quantity} шт.</dd>
           <dt>Доставка:</dt> <dd>{draft.needsDelivery ? 'Потрібна' : 'Самовивіз'}</dd>
-          {draft.needsDelivery && <><dt>Адреса:</dt> <dd>{draft.address || 'Не вказано'}</dd></>}
+          {draft.needsDelivery && <><dt>Адреса:</dt> <dd>{draft.deliveryAddress || 'Не вказано'}</dd></>}
         </dl>
         <h4 className="text-danger mt-4">Разом: {total} ₴</h4>
       </Card.Body>

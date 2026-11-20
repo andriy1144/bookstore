@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { OrdersContext } from '../context/OrdersContext.js';
 import { api } from '../services/api.js';
 import { validateOrder } from '../domain/orderValidation.js';
+import useAuth from '../hooks/useAuth.js';
 
 export default function OrdersProvider({ books, children }) {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Вже true при старті
   const [error, setError] = useState(null);
   const [notice, setNotice] = useState('');
+  const { user } = useAuth();
 
   // Завантаження при першому монтуванні (безпечне для React StrictMode)
   useEffect(() => {
@@ -53,7 +55,8 @@ export default function OrdersProvider({ books, children }) {
     if (!validation.ok) return validation;
 
     try {
-      const newOrder = await api.createOrder(validation.value);
+      // Замовлення автентифікованого користувача прив'язується до його облікового запису
+      const newOrder = await api.createOrder({ ...validation.value, userId: user?.id ?? null });
       setOrders((prev) => [...prev, newOrder]);
       setNotice('Замовлення успішно створено на сервері.');
       return { ok: true, record: newOrder };
